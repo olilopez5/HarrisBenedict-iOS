@@ -15,6 +15,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var weightLabel: UITextField!
     @IBOutlet weak var heightLabel: UITextField!
     @IBOutlet weak var activityPicker: UIPickerView!
+    
     let activityLevels = [
         ("Sedentario", 1.2),
         ("Ligera (1-3 días)", 1.375),
@@ -74,7 +75,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         print("Actividad seleccionada: \(activityLevels[selectedIndex].0), factor: \(activityFactor)")
             let tdee = tmb * activityFactor
 
-            resultLabel.text = String(format: "TMB: %.0f kcal\nTDEE: %.0f kcal", tmb, tdee)
+            resultLabel.text = String(format: "Calorías diarias para mantener el peso actual: %.0f kcal\nTDEE: %.0f kcal", tmb, tdee)
     }
     
 }
