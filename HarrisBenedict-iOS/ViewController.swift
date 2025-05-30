@@ -16,6 +16,11 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var heightLabel: UITextField!
     @IBOutlet weak var activityPicker: UIPickerView!
     
+    @IBOutlet weak var objective: UISegmentedControl!
+    
+    var tdee: Double = 0.0
+    
+    
     let activityLevels = [
         ("Sedentario", 1.2),
         ("Ligera (1-3 días)", 1.375),
@@ -73,9 +78,49 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         let selectedIndex = activityPicker.selectedRow(inComponent: 0)
             let activityFactor = activityLevels[selectedIndex].1
         print("Actividad seleccionada: \(activityLevels[selectedIndex].0), factor: \(activityFactor)")
-            let tdee = tmb * activityFactor
+            tdee = tmb * activityFactor
 
-            resultLabel.text = String(format: "Calorías diarias para mantener el peso actual: %.0f kcal\nTDEE: %.0f kcal", tmb, tdee)
+            resultLabel.text = String(format: "TMB : %.0f kcal\n\nTDEE : %.0f kcal", tmb, tdee)
+        resultLabel.backgroundColor = .hBsecundary
+    }
+    
+    @IBAction func showExplanation(_ sender: Any) {
+        let alert = UIAlertController(
+            title: "Resultado explicado",
+            message: """
+            🔹 **TMB (Tasa Metabólica Basal):** Es la cantidad de calorías que tu cuerpo necesita diariamente para mantener sus funciones vitales si estuvieras en reposo absoluto (sin moverte en todo el día).
+
+            🔹 **TDEE (Gasto Energético Diario Total):** Es el total de calorías que quemas al día, incluyendo tu nivel de actividad física. Se calcula multiplicando la TMB por un factor según tu estilo de vida.
+
+            👉 Usa el TDEE como referencia para ajustar tu dieta:
+            - Para mantener tu peso: consume aproximadamente ese número de calorías.
+            - Para perder peso: reduce entre 300 y 500 kcal al día.
+            - Para ganar masa muscular: aumenta entre 200 y 400 kcal al día.
+            """,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cerrar", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    /*@IBAction func showGoalOptions(_ sender: Any) {
+        
+        let selected = objective.selectedSegmentIndex
+           if selected == 1 {
+               performSegue(withIdentifier: "showSurplusOptions", sender: self)
+           } else if selected == 2 {
+               performSegue(withIdentifier: "showDeficitOptions", sender: self)
+           } else {
+               let alert = UIAlertController(title: "Selecciona un objetivo", message: "Elige si quieres ganar masa muscular o perder grasa", preferredStyle: .alert)
+               alert.addAction(UIAlertAction(title: "Ok", style: .default))
+               present(alert, animated: true)
+           }
+    }*/
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let goalOptionsVC = segue.destination as! GoalOptionsViewController
+        goalOptionsVC.tdee = tdee
+        goalOptionsVC.goal = objective.selectedSegmentIndex
     }
     
 }
